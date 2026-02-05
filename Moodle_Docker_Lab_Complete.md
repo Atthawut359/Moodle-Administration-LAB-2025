@@ -240,71 +240,8 @@ User Request
 
 ### 3.1 System Architecture Diagram
 
-![System Architecture](images/architecture2.png)
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        Host Machine                             │
-│                     (Windows/macOS/Linux)                       │
-│                                                                 │
-│  ┌────────────────────────────────────────────────────────────┐ │
-│  │                    Docker Engine                           │ │
-│  │                                                            │ │
-│  │  ┌──────────────────────────────────────────────────────┐  │ │
-│  │  │         Bridge Network (moodle_network)              │  │ │
-│  │  │                   172.18.0.0/16                      │  │ │
-│  │  │                                                      │  │ │
-│  │  │  ┌──────────────────────┐  ┌──────────────────────┐  │  │ │
-│  │  │  │   Container 1        │  │   Container 2        │  │  │ │
-│  │  │  │   moodle_app         │  │   moodle_db          │  │  │ │
-│  │  │  ├──────────────────────┤  ├──────────────────────┤  │  │ │
-│  │  │  │ Image:               │  │ Image:               │  │  │ │
-│  │  │  │ lthub/moodle:latest  │  │ mariadb:latest       │  │  │ │
-│  │  │  ├──────────────────────┤  ├──────────────────────┤  │  │ │
-│  │  │  │ Services:            │  │ Services:            │  │  │ │
-│  │  │  │ • Apache Web Server  │  │ • MariaDB Server     │  │  │ │
-│  │  │  │ • PHP 8.x            │  │ • MySQL Protocol     │  │  │ │
-│  │  │  │ • Moodle Core        │  │                      │  │  │ │
-│  │  │  ├──────────────────────┤  ├──────────────────────┤  │  │ │
-│  │  │  │ Port Mapping:        │  │ Internal Port:       │  │  │ │
-│  │  │  │ 8080:80 (HTTP)       │  │ 3306 (MySQL)         │  │  │ │
-│  │  │  ├──────────────────────┤  ├──────────────────────┤  │  │ │
-│  │  │  │ Hostname: moodle     │  │ Hostname: db         │  │  │ │
-│  │  │  │ IP: 172.18.0.3       │  │ IP: 172.18.0.2       │  │  │ │
-│  │  │  └─────────┬────────────┘  └───────────┬──────────┘  │  │ │
-│  │  │            │                           │             │  │ │
-│  │  │            │    Database Connection    │             │  │ │
-│  │  │            │◄─────────────────────────►│             │  │ │
-│  │  │            │    mysql://db:3306        │             │  │ │
-│  │  │            │                           │             │  │ │
-│  │  └────────────┼───────────────────────────┼─────────────┘  │ │
-│  │               │                           │                │ │
-│  │               │                           │                │ │
-│  │  ┌────────────▼────────────┐  ┌───────────▼─────────────┐  │ │
-│  │  │   Named Volume          │  │   Named Volume          │  │ │
-│  │  │   moodledata            │  │   db_data               │  │ │
-│  │  ├─────────────────────────┤  ├─────────────────────────┤  │ │
-│  │  │ Mount Point:            │  │ Mount Point:            │  │ │
-│  │  │ /moodledata             │  │ /var/lib/mysql          │  │ │
-│  │  ├─────────────────────────┤  ├─────────────────────────┤  │ │
-│  │  │ Contains:               │  │ Contains:               │  │ │
-│  │  │ • Uploaded files        │  │ • Database tables       │  │ │
-│  │  │ • User data             │  │ • Indexes               │  │ │
-│  │  │ • Cache files           │  │ • Transaction logs      │  │ │
-│  │  │ • Session data          │  │ • Binary logs           │  │ │
-│  │  │ • Temp files            │  │                         │  │ │
-│  │  └─────────────────────────┘  └─────────────────────────┘  │ │
-│  └────────────────────────────────────────────────────────────┘ │
-└──────────────────────┬──────────────────────────────────────────┘
-                       │
-                       │ Port Forwarding
-                       │ localhost:80 → Container:80
-                       │
-              ┌────────▼─────────┐
-              │   User Browser   │
-              │ http://localhost │
-              │                  │
-              └──────────────────┘
-```
+![System Architecture](images/architecture3.png)
+
 
 ### 3.2 Data Flow และการสื่อสาร
 
