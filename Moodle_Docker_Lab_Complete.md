@@ -459,10 +459,7 @@ docker volume inspect moodle-docker_moodledata
 หลังจากบันทึกแล้ว ระบบจะแสดงหน้า **Dashboard** ของระบบ
 
 **บันทึกผลการทดลอง 6:**
-```bash
- รูปหน้า Dashboard 
-```
-
+<img width="1901" height="914" alt="image" src="https://github.com/user-attachments/assets/979a517a-9244-4b9d-8547-719545978c82" />
 ---
 
 ## 6. การตั้งค่าและดูแลระบบ
