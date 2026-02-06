@@ -702,10 +702,7 @@ Learning outcomes:
 4. คลิก **Save and display**
 
 **บันทึกผลการทดลอง 8:**
-```bash
- รูปหน้าผลลัพธ์การสร้างรายวิชา
-```
-
+<img width="1919" height="916" alt="image" src="https://github.com/user-attachments/assets/cb2a2826-7c27-468b-b200-4dce33a075ce" />
 ---
 
 ### 6.4 การจัดการผู้ใช้งาน (User Management)
