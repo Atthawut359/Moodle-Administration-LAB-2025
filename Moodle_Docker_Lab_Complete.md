@@ -260,6 +260,7 @@ services:
       MOODLE_DB_NAME: moodle
       MOODLE_DB_USER: moodleuser
       MOODLE_DB_PASSWORD: moodlepassword # แก้ไขรหัสผ่านให้เป็นของตนเอง ให้ตรงกับรหัสผ่าน MYSQL_PASSWORD ด้านบน
+      MOODLE_URL: 'http://localhost'
       
     volumes:
       - moodledata:/moodledata
