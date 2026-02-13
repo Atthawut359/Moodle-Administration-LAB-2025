@@ -908,62 +908,58 @@ docker exec -i moodle_db mysql -u moodleuser -pmoodlepassword moodle < backup_20
 **1. อธิบายความแตกต่างระหว่าง Docker Image และ Docker Container พร้อมยกตัวอย่าง**
 
 คำตอบ:
-```
 
-```
+Docker Image คือไฟล์ต้นแบบ เหมือนแบบพิมพ์เขียว ส่วน Docker Container คือสิ่งที่รันจริงจาก Image ตัวอย่างเช่น Image moodle:latest เป็นต้นแบบ ส่วน Container moodle_app คือ Moodle ที่กำลังทำงานอยู่
+
+
 
 **2. จากสถาปัตยกรรมในการทดลอง มี Container กี่ตัว? แต่ละตัวมีหน้าที่อะไร?**
 
 คำตอบ:
-```
 
-```
+จากสถาปัตยกรรมในการทดลอง มี Container ทั้งหมด 2 ตัว
+
+Moodle Container (Web/App Container)
+ทำหน้าที่รันระบบ Moodle ให้บริการเว็บไซต์แก่ผู้ใช้ ผ่านเว็บเบราว์เซอร์ โดยใช้ Apache และ PHP
+
+Database Container (MariaDB/MySQL Container)
+ทำหน้าที่จัดเก็บและจัดการฐานข้อมูลของ Moodle เช่น ข้อมูลผู้ใช้ รายวิชา และผลการเรียน
 
 **3. จากการทดลองมีการจัดการ Volume แบบใด มีข้อดีข้อเสียอย่างไร?**
 
 คำตอบ:
-```
 
-```
+แบบ Named Volumes ข้อดีคือข้อมูลไม่สูญหายแม้จะสั่งหยุดหรือลบ Container และ Docker เป็นผู้จัดการพื้นที่เก็บให้เอง ข้อเสียคือการเข้าไปแก้ไขไฟล์โดยตรงจาก Host OS (Windows) ทำได้ยากกว่าการแมปโฟลเดอร์ปกติ
 
 **4. Network ใน Docker Compose ทำหน้าที่อะไร? Container สื่อสารกันอย่างไร?**
 
 คำตอบ:
-```
 
-
-```
-
+ทำหน้าที่สร้างระบบเครือข่ายเสมือนเพื่อให้ Container ต่างๆ เชื่อมต่อกันได้ โดยใช้ชื่อ Service (เช่น db หรือ moodle) เป็นตัวระบุที่อยู่ในการติดต่อสื่อสารแทนการใช้เลข IP Address
 
 **5. `depends_on` ในไฟล์ docker-compose.yml มีความสำคัญอย่างไร?**
 
 คำตอบ:
-```
 
-```
+ใช้กำหนดลำดับการเริ่มทำงานของ Container เพื่อให้มั่นใจว่า Database จะถูกรันขึ้นมาให้พร้อมใช้งานก่อนที่ Moodle จะเริ่มทำงาน ช่วยป้องกันข้อผิดพลาดในการเชื่อมต่อฐานข้อมูลตอนเริ่มต้น
 
 **6. ถ้าต้องการเปลี่ยน Port ของ Moodle  เป็น 9000 ต้องแก้ไขส่วนใดของไฟล์?**
 
 คำตอบ:
-```
 
-
-```
+แก้ไขที่ส่วน ports: ในไฟล์ docker-compose.yml โดยเปลี่ยนจาก "80:8080" เป็น "9000:8080"
 
 **7. Environment Variables `MOODLE_DB_HOST=db` หมายความว่าอย่างไร? ทำไมไม่ใช้ `localhost`?**
 
 คำตอบ:
-```
 
-```
-
+หมายถึงการระบุให้ Moodle ไปเชื่อมต่อฐานข้อมูลที่ Container ชื่อ db สาเหตุที่ไม่ใช้ localhost เพราะในระบบ Docker นั้น localhost จะหมายถึงตัว Container ของ Moodle เอง ซึ่งไม่มีฐานข้อมูลรันอยู่
 
 **8. เปรียบเทียบข้อดีและข้อเสียของการติดตั้ง Moodle ด้วย Docker เทียบกับการติดตั้งแบบปกติ**
 
 คำตอบ:
-```
 
-```
+ข้อดีคือติดตั้งง่าย รวดเร็ว และควบคุมเวอร์ชันของ PHP/DB ได้แม่นยำ ข้อเสียคือต้องใช้ทรัพยากรเครื่องมากกว่าการติดตั้งปกติเล็กน้อย และต้องมีความรู้พื้นฐานด้านการจัดการ Container
 
 **9. ถ้าต้องการเพิ่ม Container Redis สำหรับ Caching จะต้องแก้ไข docker-compose.yml อย่างไร?**
 
@@ -971,7 +967,12 @@ docker exec -i moodle_db mysql -u moodleuser -pmoodlepassword moodle < backup_20
 ```yaml
 
 
-
+redis:
+    image: bitnami/redis:latest
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    networks:
+      - moodle-network
 
 
 
@@ -984,20 +985,18 @@ docker exec -i moodle_db mysql -u moodleuser -pmoodlepassword moodle < backup_20
 
 คำตอบ:
 ```
-วิธีตรวจสอบ:
+วิธีตรวจสอบ:ใช้คำสั่ง docker-compose logs เพื่อดูข้อความ Error หรือใช้ docker ps เช็กว่า Container DB ยังรันอยู่หรือไม่
 
 
-วิธีแก้ไข:
+วิธีแก้ไข:ตรวจสอบชื่อ Host, Username และ Password ในไฟล์ docker-compose.yml ให้ตรงกันทั้งฝั่ง Moodle และ Database
 
 ```
 
 **11. ถ้ารัน `docker-compose down -v` จะเกิดอะไรขึ้นกับข้อมูล?**
 
 คำตอบ:
-```
 
-
-```
+ข้อมูลทั้งหมดรวมถึงฐานข้อมูลและไฟล์ที่อัปโหลดไว้จะถูกลบออกไปถาวร เนื่องจากคำสั่ง -v สั่งให้ลบ Volume ที่เก็บข้อมูลทิ้งไปด้วย
 
 ---
 
